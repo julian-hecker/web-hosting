@@ -3,11 +3,12 @@ import Tabs from './Tabs';
 import { Box, Button, Stack } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
+import AccordianTable from './AccordianTable';
 
 
 export default function Menu() {
     const [tab, setTab] = useState(0);
-    const [directory, setDirectory] = useState<File>();
+    const [directory, setDirectory] = useState<FileList>();
     const [directoryName, setDirectoryName] = useState<string>("");
     const ref = useRef<HTMLInputElement>(null);
   
@@ -20,12 +21,21 @@ export default function Menu() {
   
     const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
+      // Store file list in variable.
       const theFiles = e.target.files;
-      console.log(theFiles ? theFiles : "oof");
-      const relativePath = theFiles === null ? "" : theFiles[0].webkitRelativePath;
-      const folderName = relativePath.split("/");
-      setDirectoryName(folderName[0]);
-      setDirectory(e.target.files === null ? undefined : e.target.files[0]);
+      // Attempt to update directory name.
+      updateDirectoryName(theFiles);
+      // Store the file list in state.
+      setDirectory(theFiles === null ? undefined : theFiles);
+    }
+
+    const updateDirectoryName = (theFiles: FileList | null) => {
+        // Attempt to get the relative path.
+        const relativePath = theFiles === null ? "" : theFiles[0].webkitRelativePath;
+        // Split the relative path on the 'character'.
+        const folderName = relativePath.split("/");
+        // Store the directory name in state by looking at the first item.
+        setDirectoryName(folderName[0]);
     }
 
     return(
@@ -40,7 +50,8 @@ export default function Menu() {
                     width: "40%",
                     minWidth: "300px",
                     maxWidth: "100%",
-                    height: "50%"
+                    height: "50%",
+                    overflow: "auto"
                 }}>
                 <Stack direction={"column"} 
                        alignItems={"center"}
@@ -61,7 +72,9 @@ export default function Menu() {
                             {directory ? 
                                 <label htmlFor="input-area" 
                                        className={`custom-file-upload ${directory ? "custom-file-upload--item-submitted" : ""}`}>
-                                    <Stack direction={"row"} gap={"1rem"} alignItems={"center"}>
+                                    <Stack direction={"row"} 
+                                           gap={"1rem"} 
+                                           alignItems={"center"}>
                                         <FolderIcon fontSize="large"/> {directoryName}
                                     </Stack>
                                 </label>
@@ -69,7 +82,9 @@ export default function Menu() {
                                 <>
                                     <label htmlFor="input-area" 
                                            className={`custom-file-upload`}>
-                                        <Stack direction={"row"} gap={"1rem"} alignItems={"center"}>
+                                        <Stack direction={"row"} 
+                                               gap={"20px"} 
+                                               alignItems={"center"}>
                                             <DriveFolderUploadIcon fontSize="large"/> Click to upload your directory.
                                         </Stack>
                                     </label>
@@ -84,13 +99,13 @@ export default function Menu() {
                         : 
                         <Box sx={{
                                 height: "100%",
+                                overflow: "hidden",
                                 display: "flex",
-                                alignItems: "center",
                                 justifyContent: "center",
-                                background: "#181818",
                                 borderRadius: "4px",
                                 width: "100%"
                             }}>
+                            <AccordianTable/>
                         </Box>
                     }
                     {tab === 0 ? 

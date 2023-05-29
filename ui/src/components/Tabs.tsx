@@ -10,11 +10,11 @@ export default function Tabs({setTab, tab}: TabsProps) {
         <>
             <Stack direction={"row"}>
               <Button onClick={()=>setTab(0)} 
-                      className={`${tab === 0 ? "action-button--active" : "action-button"}`}>
+                      className={`${tab === 0 ? "action-button--active" : "action-button"} action-button-left`}>
                 Deploy
               </Button>
               <Button onClick={()=>setTab(1)}
-                      className={`${tab === 1 ? "action-button--active" : "action-button"}`}>
+                      className={`${tab === 1 ? "action-button--active" : "action-button"} action-button-right`}>
                 View
               </Button>
             </Stack>

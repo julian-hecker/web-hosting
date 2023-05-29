@@ -19,7 +19,6 @@
 .glass-box {
   /* From https://css.glass */
   background: rgba(250, 250, 250, 0);
-  border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(11.3px);
   -webkit-backdrop-filter: blur(11.3px);
@@ -29,8 +28,17 @@
 .action-button {
   color: #383582 !important;
   border-bottom: none !important;
-  border-bottom-left-radius: 0 !important;
+}
+
+.action-button-left {
+  border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
+}
+
+.action-button-right {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  transition: border-color 2s;
 }
 
 .action-button--active {
@@ -47,7 +55,7 @@ input[type="file" i] {
 .custom-file-upload {
   width: 20rem;
   height: 5rem;
-  padding: 1rem;
+  padding: 20px;
   cursor: pointer;
   display: flex !important;
   align-items: center !important;
@@ -62,18 +70,16 @@ input[type="file" i] {
   border: 2px solid #383582;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.MuiPaper-root {
+  background: none !important;
 }
 
-.card {
-  padding: 2em;
+th, td {
+  border-bottom: 1px solid #383582 !important;
 }
 
-.read-the-docs {
-  color: #888;
+.MuiTableCell-root, .MuiSvgIcon-root {
+  color: #383582 !important;
 }
 
 @media only screen and (max-width: 600px)  {
