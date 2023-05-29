@@ -41,10 +41,10 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
-// require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+require('dotenv').config();
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -96,6 +96,21 @@ module.exports = {
     //   network_id: 2111,   // This network is yours, in the cloud.
     //   production: true    // Treats this network as if it was a public net. (default: false)
     // }
+    theta_testnet: {
+      provider: () => {
+        // Replace the private key below with the private key of the deployer wallet.
+        // Make sure the deployer wallet has a sufficient amount of TFuel, e.g. 100 TFuel
+        var deployerPrivateKey = process.env.DEPLOYER_PRIVATE_KEY;
+
+        return new HDWalletProvider({
+          privateKeys: [deployerPrivateKey],
+          providerOrUrl:
+            'https://eth-rpc-api-testnet.thetatoken.org/rpc',
+        });
+      },
+      network_id: 365,
+      gasPrice: 4000000000000,
+    },
   },
 
   // Set default mocha options here, use special reporters, etc.

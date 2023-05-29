@@ -7,10 +7,15 @@
     "test": "truffle test",
     "build": "truffle compile",
     "deploy:local": "truffle migrate --reset",
+    "deploy:test": "truffle deploy --network theta_testnet --reset",
     "dev": "ganache"
   },
   "devDependencies": {
     "ganache": "^7.8.0",
     "truffle": "^5.9.2"
+  },
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.1.11",
+    "dotenv": "^16.0.3"
   }
 }
