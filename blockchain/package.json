@@ -1,0 +1,16 @@
+{
+  "name": "theta-host-contract",
+  "version": "1.0.0",
+  "description": "smart contracts for theta host",
+  "main": "truffle-config.js",
+  "scripts": {
+    "test": "truffle test",
+    "build": "truffle compile",
+    "deploy:local": "truffle migrate --reset",
+    "dev": "ganache"
+  },
+  "devDependencies": {
+    "ganache": "^7.8.0",
+    "truffle": "^5.9.2"
+  }
+}
