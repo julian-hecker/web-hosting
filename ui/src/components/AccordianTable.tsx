@@ -72,7 +72,7 @@ export default function AccordianTable() {
                   <TableRow>
                     <TableCell />
                     <TableCell>Token</TableCell>
-                    <TableCell>Date</TableCell>
+                    <TableCell>Created Date</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
