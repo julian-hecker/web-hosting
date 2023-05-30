@@ -13,7 +13,7 @@ contract('SiteHost', (accounts) => {
     await siteHost.uploadSite(siteToken, { from: user });
 
     // Get the sites of the user
-    const userSites = await siteHost.getSites(user);
+    const userSites = await siteHost.getSites();
 
     // Check if the uploaded site is in the user's sites
     assert.strictEqual(userSites[0].siteToken, siteToken);

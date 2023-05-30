@@ -6,8 +6,8 @@
   "scripts": {
     "test": "truffle test",
     "build": "truffle compile",
-    "deploy:local": "truffle migrate --reset",
-    "deploy:test": "truffle deploy --network theta_testnet --reset",
+    "deploy": "truffle migrate --reset",
+    "deploy:testnet": "truffle deploy --network theta_testnet --reset",
     "dev": "ganache"
   },
   "devDependencies": {

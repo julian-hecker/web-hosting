@@ -41,9 +41,8 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
-// const { MNEMONIC, PROJECT_ID } = process.env;
-
 require('dotenv').config();
+// const { MNEMONIC, PROJECT_ID } = process.env;
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
