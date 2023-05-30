@@ -22,7 +22,7 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(11.3px);
   -webkit-backdrop-filter: blur(11.3px);
-  border: 1px solid rgba(250, 250, 250, 0.26);
+  border: 1px solid rgba(56, 53, 130, 0.14);
 }
 
 .action-button {
@@ -38,7 +38,6 @@
 .action-button-right {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
-  transition: border-color 2s;
 }
 
 .action-button--active {
@@ -74,8 +73,16 @@ input[type="file" i] {
   background: none !important;
 }
 
-th, td {
+th {
   border-bottom: 1px solid #383582 !important;
+}
+
+.collapsable-cell--opened {
+  border-bottom: 1px solid #383582 !important;
+}
+
+.collapsable-cell--collapsed {
+  border-bottom: none !important;
 }
 
 .MuiTableCell-root, .MuiSvgIcon-root {
