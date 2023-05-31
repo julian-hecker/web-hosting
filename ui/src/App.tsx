@@ -3,42 +3,36 @@ import { useCallback } from 'react';
 
 import { ParticleBg } from './components/ParticleBg';
 import Menu from './components/Menu';
+import { supabase } from './constants/supabase';
 import GhostLogo from './assets/GhostLogo.svg';
 import { useMetamask } from './hooks/useMetamask';
-import { useContract } from './hooks/useContract';
 import './App.css';
 
 function App() {
   const { account } = useMetamask();
-  const { contract } = useContract();
-
-  const getSites = useCallback(async () => {
-    if (!contract) throw new Error('Contract not defined');
-    try {
-      const sites = await contract.methods
-        .getSites()
-        .call({ from: account });
-      return sites;
-    } catch (err) {
-      console.error(err);
-      throw new Error('Failed to execute smart contract', contract);
-    }
-  }, [contract, account]);
 
   const uploadSite = useCallback(
-    async (token: string) => {
-      if (!contract) throw new Error('Contract not defined');
-      try {
-        await contract.methods
-          .uploadSite(token)
-          .send({ from: account });
-      } catch (err) {
-        console.error(err);
-        throw new Error('Failed to execute smart contract');
-      }
+    async (site_token: string) => {
+      if (!account) throw new Error('MetaMask Account not found');
+      const { data, error } = await supabase
+        .from('sites')
+        .insert({ account, site_token });
+      if (error) throw new Error('Failed to upload site.');
+      return data;
     },
-    [contract, account],
+    [account],
   );
+
+  const getSites = useCallback(async () => {
+    if (!account) throw new Error('MetaMask Account not found');
+    const { data, error } = await supabase
+      .from('sites')
+      .select('*')
+      .eq('account', account)
+      .order('created_at', { ascending: false });
+    if (error) throw new Error('Failed to get your sites.');
+    return data;
+  }, [account]);
 
   return (
     <div>
