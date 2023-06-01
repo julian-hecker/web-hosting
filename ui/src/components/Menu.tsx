@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Tabs from './Tabs';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, Stack, CircularProgress, Alert, Snackbar } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import AccordianTable from './AccordianTable';
@@ -13,6 +13,11 @@ export default function Menu() {
   const [tab, setTab] = useState(0);
   const [directory, setDirectory] = useState<FileList>();
   const [directoryName, setDirectoryName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const [uploadMessage, setUploadMessage] = useState<string>('');
+  const [snackOpen, setSnackOpen] = useState<boolean>(false);
+
   const { account } = useWeb3Context();
   const { sendFilesToTheta } = useTheta();
   const { getSites, uploadSite } = useSiteHostContract();
@@ -40,7 +45,16 @@ export default function Menu() {
   };
 
   const handleDeploy = async () => {
-    if (!directory) return;
+    setLoading(true);
+    if (!directory)
+    {
+      setUploadMessage(`You need to select a directory!`);
+      setUploadSuccess(false);
+      setSnackOpen(true);
+      setLoading(false);
+      return;
+    }
+
     let token = '';
     try {
       token = await sendFilesToTheta(directory);
@@ -49,16 +63,24 @@ export default function Menu() {
       setDirectory(undefined);
       setDirectoryName('');
       // todo: present success snackbar
-      console.log('your site has successfully deployed!');
-      console.log(THETA_DATA_URL + '/' + token);
+      setUploadMessage(`Your site has successfully deployed! ${THETA_DATA_URL + '/' + token}`);
+      setUploadSuccess(true);
+      setSnackOpen(true);
+      setLoading(false);
     } catch (err) {
       console.error(err);
       // if first part succeeded but not the second part
       if (token)
-        alert(
-          `Your site was successfully deployed, but the registration on our site failed. Save this link to view your site:
-${THETA_DATA_URL}/${token}`,
-        );
+      {
+        setUploadSuccess(true);
+        setUploadMessage(`Your site was successfully deployed, but the registration on our site failed. Save this link to view your site: ${THETA_DATA_URL + '/' + token}`);
+        setSnackOpen(true);
+        setLoading(false);
+        return;
+      }
+      setUploadSuccess(false);
+      setUploadMessage(`Your site was was not deployed. Try again later`);
+      setSnackOpen(true);
     }
   };
 
@@ -69,8 +91,27 @@ ${THETA_DATA_URL}/${token}`,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, account]);
 
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+
   return (
     <>
+      <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleClose}>
+        {uploadSuccess ? 
+          <Alert onClose={handleClose} sx={{ width: '100%', background:"#4cc76c !important", color: "#383582" }}>
+            {uploadMessage}
+          </Alert>
+          :
+          <Alert onClose={handleClose} sx={{ width: '100%', background:"#c92626 !important", color: "#FAFAFA"}}>
+            {uploadMessage}
+          </Alert>
+        }
+      </Snackbar>
       <Box
         sx={{
           position: 'absolute',
@@ -108,6 +149,7 @@ ${THETA_DATA_URL}/${token}`,
                 justifyContent: 'center',
               }}
             >
+              {loading ? <CircularProgress /> : <>
               {directory ? (
                 <label
                   htmlFor="input-area"
@@ -151,7 +193,8 @@ ${THETA_DATA_URL}/${token}`,
                     webkitdirectory=""
                   />
                 </>
-              )}
+              )}</>
+              }
             </Box>
           ) : (
             <Box
@@ -169,6 +212,7 @@ ${THETA_DATA_URL}/${token}`,
           )}
           {tab === 0 ? (
             <Button
+              disabled={loading}
               variant="contained"
               sx={{ color: '#FAFAFA' }}
               onClick={handleDeploy}
