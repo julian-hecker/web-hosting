@@ -1,28 +1,21 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Tabs from './Tabs';
 import { Box, Button, Stack } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import AccordianTable, { RowData } from './AccordianTable';
+import AccordianTable from './AccordianTable';
 import { useTheta } from '../hooks/useTheta';
 import { useWeb3Context } from '../contexts/Web3Context';
-import { supabase } from '../constants/supabase';
 import { THETA_DATA_URL } from '../constants/config';
+import { useSiteHostContract } from '../hooks/useSiteHostContract';
 
 export default function Menu() {
   const [tab, setTab] = useState(0);
   const [directory, setDirectory] = useState<FileList>();
   const [directoryName, setDirectoryName] = useState<string>('');
-  const ref = useRef<HTMLInputElement>(null);
   const { account } = useWeb3Context();
   const { sendFilesToTheta } = useTheta();
-
-  useEffect(() => {
-    if (ref.current !== null) {
-      ref.current.setAttribute('directory', '');
-      ref.current.setAttribute('webkitdirectory', '');
-    }
-  }, [ref]);
+  const { getSites, uploadSite } = useSiteHostContract();
 
   const handleFileInput = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -48,34 +41,28 @@ export default function Menu() {
 
   const handleDeploy = async () => {
     if (!directory) return;
-    const token = await sendFilesToTheta(directory);
-    await uploadSite(token);
-    // todo: present success snackbar
-    console.log('your site has successfully deployed!');
-    console.log(THETA_DATA_URL + '/' + token);
+    let token = '';
+    try {
+      token = await sendFilesToTheta(directory);
+      await uploadSite(token);
+      // succeeded
+      setDirectory(undefined);
+      setDirectoryName('');
+      // todo: present success snackbar
+      console.log('your site has successfully deployed!');
+      console.log(THETA_DATA_URL + '/' + token);
+    } catch (err) {
+      console.error(err);
+      // if first part succeeded but not the second part
+      if (token)
+        alert(
+          `Your site was successfully deployed, but the registration on our site failed. Save this link to view your site:
+${THETA_DATA_URL}/${token}`,
+        );
+    }
   };
 
-  const uploadSite = async (site_token: string) => {
-    if (!account) throw new Error('MetaMask Account not found');
-    const { data, error } = await supabase
-      .from('sites')
-      .insert({ account, site_token });
-    if (error) throw new Error('Failed to upload site.');
-    return data;
-  };
-
-  const getSites = async () => {
-    if (!account) throw new Error('MetaMask Account not found');
-    const { data, error } = await supabase
-      .from('sites')
-      .select('*')
-      .eq('account', account)
-      .order('created_at', { ascending: false });
-    if (error) throw new Error('Failed to get your sites.');
-    return data as RowData[];
-  };
-
-  const [sites, setSites] = useState<RowData[]>([]);
+  const [sites, setSites] = useState<string[]>([]);
   useEffect(() => {
     if (!account) return;
     getSites().then(setSites);
@@ -90,12 +77,14 @@ export default function Menu() {
           margin: '0',
           top: '50%',
           left: '50%',
-          msTransform: 'translate(-50%, -50%)',
-          transform: 'translate(-50%, -50%)',
-          width: '40%',
+          msTransform: 'translate(-50%, -40%)',
+          transform: 'translate(-50%, -40%)',
+          width: '50%',
           minWidth: '300px',
           maxWidth: '100%',
-          height: '50%',
+          minHeight: '300px',
+          height: '70%',
+          maxHeight: '100vh',
           overflow: 'auto',
         }}
       >
@@ -154,9 +143,12 @@ export default function Menu() {
                   <input
                     type="file"
                     draggable
-                    ref={ref}
                     id="input-area"
                     onChange={handleFileInput}
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    directory=""
+                    webkitdirectory=""
                   />
                 </>
               )}
