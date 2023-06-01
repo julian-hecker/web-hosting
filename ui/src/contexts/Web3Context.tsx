@@ -6,6 +6,7 @@ import {
   useState,
 } from 'react';
 import Web3 from 'web3';
+import { useMetamask } from '../hooks/useMetamask';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useWeb3 = () => {
@@ -20,13 +21,22 @@ export const useWeb3 = () => {
   return { web3, error };
 };
 
-export const Web3Context = createContext<ReturnType<typeof useWeb3>>(
+export interface IWeb3Context {
+  account?: string;
+  web3?: Web3;
+  accountError?: Error;
+  web3Error?: Error;
+}
+
+export const Web3Context = createContext<IWeb3Context>(
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   undefined!,
 );
 
 export const Web3Provider = ({ children }: PropsWithChildren) => {
-  const value = useWeb3();
+  const { web3, error: web3Error } = useWeb3();
+  const { account, error: accountError } = useMetamask();
+  const value = { web3, account, web3Error, accountError };
 
   return (
     <Web3Context.Provider value={value}>
