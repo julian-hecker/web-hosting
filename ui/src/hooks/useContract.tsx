@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import SiteHostContract from '../../../blockchain/build/contracts/SiteHost.json';
+// import SiteHostContract from '../../../blockchain/build/contracts/SiteHost.json';
 import { useWeb3Context } from '../contexts/Web3Context';
 
-export const useContract = (contractAbi: any = SiteHostContract) => {
+export const useContract = (contractAbi: any) => {
   const { web3 } = useWeb3Context();
   const [contract, setContract] = useState<any>();
 
