@@ -1,20 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.5.0;
 
 contract SiteHost {
-    struct Site {
-        string siteToken;
-        uint createdAt;
+    mapping(address => bytes32[]) public sites;
+
+    function uploadSite(bytes32 siteToken) public {
+        sites[msg.sender].push(siteToken);
     }
 
-    mapping(address => Site[]) public sites;
-
-    function uploadSite(string memory _siteToken) public {
-        Site memory newSite = Site(_siteToken, block.timestamp);
-        sites[msg.sender].push(newSite);
-    }
-
-    function getSites() public view returns (Site[] memory) {
+    function getSites() public view returns (bytes32[] memory) {
         return sites[msg.sender];
     }
 }
