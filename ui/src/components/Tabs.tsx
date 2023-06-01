@@ -1,23 +1,31 @@
 import { Stack, Button } from '@mui/material';
 
 interface TabsProps {
-    setTab: (tab: number) => void;  
-    tab: number;  
+  setTab: (tab: number) => void;
+  tab: number;
 }
 
-export default function Tabs({setTab, tab}: TabsProps) {
-    return(
-        <>
-            <Stack direction={"row"}>
-              <Button onClick={()=>setTab(0)} 
-                      className={`${tab === 0 ? "action-button--active" : "action-button"} action-button-left`}>
-                Deploy
-              </Button>
-              <Button onClick={()=>setTab(1)}
-                      className={`${tab === 1 ? "action-button--active" : "action-button"} action-button-right`}>
-                View
-              </Button>
-            </Stack>
-        </>
-    )
+export default function Tabs({ setTab, tab }: TabsProps) {
+  return (
+    <>
+      <Stack direction={'row'}>
+        <Button
+          onClick={() => setTab(0)}
+          className={`${
+            tab === 0 ? 'action-button--active' : 'action-button'
+          } action-button-left`}
+        >
+          Deploy
+        </Button>
+        <Button
+          onClick={() => setTab(1)}
+          className={`${
+            tab === 1 ? 'action-button--active' : 'action-button'
+          } action-button-right`}
+        >
+          View
+        </Button>
+      </Stack>
+    </>
+  );
 }

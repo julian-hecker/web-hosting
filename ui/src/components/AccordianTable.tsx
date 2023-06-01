@@ -12,76 +12,93 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { THETA_DATA_URL } from '../constants/config';
 
-export interface rowData {
-  token: string;
-  createdDate: string;
+export interface RowData {
+  site_token: string;
+  created_at: string;
 }
 
-const rows = [
-    {token: "123", createdDate: "12343"},
-    {token: "123", createdDate: "12343"},
-    {token: "123", createdDate: "12343"},
-    {token: "123", createdDate: "12343"},
-];
+function Row(props: { row: RowData }) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
 
-function Row(props: { row: rowData }) {
-    const { row } = props;
-    const [open, setOpen] = React.useState(false);
-  
-    return (
-      <React.Fragment>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-          <TableCell component="th" scope="row">
-            <IconButton
-              aria-label="expand row"
-              size="small"
-              onClick={() => setOpen(!open)}
-            >
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-            </TableCell>
-            <TableCell component="th" scope="row">
-                {row.token}
-            </TableCell>
-            <TableCell component="th" scope="row">
-                {row.createdDate}
-            </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0}} colSpan={6} className={`${open ? "collapsable-cell--opened" : "collapsable-cell--collapsed"}`}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="h6" gutterBottom component="div" color="red">
-                  History
-                </Typography>
-              </Box>
-            </Collapse>
-          </TableCell>
-        </TableRow>
-      </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell component="th" scope="row">
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? (
+              <KeyboardArrowUpIcon />
+            ) : (
+              <KeyboardArrowDownIcon />
+            )}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.site_token}
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.created_at}
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={6}
+          className={`${
+            open
+              ? 'collapsable-cell--opened'
+              : 'collapsable-cell--collapsed'
+          }`}
+        >
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                component="div"
+                color="red"
+              >
+                <iframe src={`${THETA_DATA_URL}/${row.site_token}`} />
+              </Typography>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
 }
 
-export default function AccordianTable() {
-    return (
-        <>
-            <TableContainer component={Paper} className='table-container'>
-              <Table aria-label="collapsible table" className='table'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell />
-                    <TableCell>Token</TableCell>
-                    <TableCell>Created Date</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <Row key={row.token} row={row} />
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-        </>
-    )
+export interface AccordionTableProps {
+  rows: RowData[];
+}
+
+export default function AccordianTable({
+  rows,
+}: AccordionTableProps) {
+  return (
+    <>
+      <TableContainer component={Paper} className="table-container">
+        <Table aria-label="collapsible table" className="table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Token</TableCell>
+              <TableCell>Created Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <Row key={row.site_token} row={row} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 }
